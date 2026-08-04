@@ -12,8 +12,8 @@
     <h3 style="font-size:16px; font-weight:bold; color:#241412; margin:0 0 16px;">Detail Profil Anggota</h3>
 
     <div style="display:flex; align-items:center; gap:20px; margin-bottom:24px;">
-        @if ($anggota->dokumen_pendukung)
-            <img src="{{ asset('storage/' . $anggota->dokumen_pendukung) }}" alt="Foto Profil"
+        @if ($anggota->foto_profil)
+            <img src="{{ Storage::url($anggota->foto_profil) }}" alt="Foto Profil"
                  style="width:90px; height:90px; border-radius:6px; object-fit:cover; border:1px solid #F3B4B4;">
         @else
             <div style="width:90px; height:90px; border-radius:6px; background:#FDEEEE; border:1px solid #F3B4B4; display:flex; align-items:center; justify-content:center; color:#B91C1C; font-size:12px; text-align:center;">

@@ -27,6 +27,7 @@ class Anggota extends Authenticatable
         'alamat_lengkap',
         'password',
         'dokumen_pendukung',
+        'foto_profil',
         'status_keanggotaan',
         'tanggal_verifikasi',
         'alasan_penghapusan',

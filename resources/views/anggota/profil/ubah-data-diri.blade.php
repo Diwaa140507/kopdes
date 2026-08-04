@@ -21,8 +21,25 @@
 
     <p style="font-size:14px; font-weight:bold; color:#241412; margin:0 0 12px;">Data yang Dapat Diperbarui</p>
 
-    <form method="POST" action="{{ route('profil.ubah-data-diri.store') }}" style="max-width:500px;">
+    <form method="POST" action="{{ route('profil.ubah-data-diri.store') }}" enctype="multipart/form-data" style="max-width:500px;">
         @csrf
+
+        <div style="margin-bottom:20px;">
+            <label style="display:block; margin-bottom:6px; font-size:14px; color:#241412;">Foto Profil</label>
+            <div style="display:flex; align-items:center; gap:16px;">
+                @if ($anggota->foto_profil)
+                    <img src="{{ Storage::url($anggota->foto_profil) }}" alt="Foto Profil"
+                         style="width:64px; height:64px; border-radius:6px; object-fit:cover; border:1px solid #F3B4B4;">
+                @else
+                    <div style="width:64px; height:64px; border-radius:6px; background:#FDEEEE; border:1px solid #F3B4B4; display:flex; align-items:center; justify-content:center; color:#B91C1C; font-size:11px; text-align:center;">
+                        Foto<br>Profil
+                    </div>
+                @endif
+                <input type="file" name="foto_profil" accept="image/*"
+                       style="flex:1; padding:8px; border:1px solid #B91C1C; border-radius:6px; font-size:13px; box-sizing:border-box; background:#ffffff;">
+            </div>
+            <p style="margin:6px 0 0; font-size:12px; color:#6B7280;">Format gambar, maksimal 2MB. Kosongkan jika tidak ingin mengganti foto.</p>
+        </div>
 
         <div style="margin-bottom:16px;">
             <label style="display:block; margin-bottom:6px; font-size:14px; color:#241412;">Email Aktif</label>
@@ -76,6 +93,8 @@
                 <p style="color:#4B5563; font-size:14px; margin:0 0 24px 0;">
                     @if ($errors->has('kata_sandi_baru') || $errors->has('konfirmasi_kata_sandi'))
                         Password tidak valid atau tidak cocok.
+                    @elseif ($errors->has('foto_profil'))
+                        {{ $errors->first('foto_profil') }}
                     @else
                         Harap semua kolom yang wajib diisi.
                     @endif

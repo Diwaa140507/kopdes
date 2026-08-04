@@ -10,6 +10,7 @@ use App\Models\Simpanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class ProfilController extends Controller
@@ -79,18 +80,29 @@ class ProfilController extends Controller
         $request->validate([
             'email' => ['required', 'email', Rule::unique('anggota', 'email')->ignore($anggota->id_anggota, 'id_anggota')],
             'alamat_lengkap' => ['required', 'string', 'max:255'],
+            'foto_profil' => ['nullable', 'image', 'max:2048'],
             'kata_sandi_lama' => ['nullable', 'required_with:kata_sandi_baru,konfirmasi_kata_sandi', 'string'],
             'kata_sandi_baru' => ['nullable', 'string', 'min:8', 'required_with:kata_sandi_lama', 'same:konfirmasi_kata_sandi'],
             'konfirmasi_kata_sandi' => ['nullable', 'string'],
         ], [
             'kata_sandi_baru.same' => 'Konfirmasi kata sandi tidak cocok dengan kata sandi baru.',
             'kata_sandi_lama.required_with' => 'Kata sandi lama wajib diisi jika ingin mengganti kata sandi.',
+            'foto_profil.image' => 'File foto profil harus berupa gambar.',
+            'foto_profil.max' => 'Ukuran foto profil maksimal 2MB.',
         ]);
 
         if ($request->filled('kata_sandi_lama')) {
             if (! Hash::check($request->kata_sandi_lama, $anggota->password)) {
                 return back()->withErrors(['kata_sandi_lama' => 'Kata sandi lama tidak sesuai.'])->withInput();
             }
+        }
+
+        // Upload foto profil baru (kalau ada), hapus foto lama biar storage nggak numpuk
+        if ($request->hasFile('foto_profil')) {
+            if ($anggota->foto_profil) {
+                Storage::disk('public')->delete($anggota->foto_profil);
+            }
+            $anggota->foto_profil = $request->file('foto_profil')->store('foto-profil', 'public');
         }
 
         // Catat perubahan Email (kalau berubah)

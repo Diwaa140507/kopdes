@@ -19,8 +19,8 @@
             <h1 style="color:#ffffff; font-size:20px; font-weight:bold; margin:0;">{{ $headerTitle }}</h1>
         </div>
         <div style="display:flex; align-items:center; gap:12px; color:#ffffff; font-size:14px;">
-            @if ($anggota->dokumen_pendukung)
-                <img src="{{ Storage::url($anggota->dokumen_pendukung) }}" alt="Foto Profil"
+            @if ($anggota->foto_profil)
+                <img src="{{ Storage::url($anggota->foto_profil) }}" alt="Foto Profil"
                      style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:1px solid #F3B4B4;">
             @else
                 <div style="width:32px; height:32px; border-radius:50%; background:#F3B4B4; color:#7F1D1D; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:12px;">
