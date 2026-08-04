@@ -24,11 +24,11 @@
         @csrf
 
         <label style="display:block; font-size:14px; color:#241412; margin-bottom:6px;">Jumlah Penarikan (Rp)</label>
-<input type="text" inputmode="numeric" id="jumlah_display" placeholder="Rp 0" required
-       value="{{ old('jumlah') ? 'Rp ' . number_format(old('jumlah'), 0, ',', '.') : '' }}"
-       style="width:100%; padding:10px 12px; border:1px solid #F3B4B4; border-radius:4px; box-sizing:border-box; font-family:Arial, sans-serif;">
-<input type="hidden" name="jumlah" id="jumlah">
-<p id="jumlah_error" style="display:none; color:#B91C1C; font-size:12px; margin:4px 0 0;"></p>
+        <input type="text" inputmode="numeric" id="jumlah_display" placeholder="Rp 0" required
+               value="{{ old('jumlah') ? 'Rp ' . number_format(old('jumlah'), 0, ',', '.') : '' }}"
+               style="width:100%; padding:10px 12px; border:1px solid #F3B4B4; border-radius:4px; box-sizing:border-box; font-family:Arial, sans-serif;">
+        <input type="hidden" name="jumlah" id="jumlah" value="{{ old('jumlah') }}">
+        <p id="jumlah_error" style="display:none; color:#B91C1C; font-size:12px; margin:4px 0 0;"></p>
         <p style="font-size:12px; color:#9CA3AF; margin:4px 0 16px;">Minimal: Rp 50.000 sesuai ketentuan koperasi. Maks: Rp {{ number_format($saldoSukarela, 0, ',', '.') }}</p>
 
         <label style="display:block; font-size:14px; color:#241412; margin-bottom:6px;">Metode Penarikan</label>
@@ -47,6 +47,10 @@
             <label style="display:block; font-size:14px; color:#241412; margin-bottom:6px;">No. Rekening / No. HP Tujuan</label>
             <input type="text" id="no_rekening" name="no_rekening_tujuan" value="{{ old('no_rekening_tujuan') }}" placeholder="kosongkan jika pilih Tunai"
                    style="width:100%; padding:10px 12px; border:1px solid #F3B4B4; border-radius:4px; margin-bottom:16px; box-sizing:border-box; font-family:Arial, sans-serif;">
+
+            <label style="display:block; font-size:14px; color:#241412; margin-bottom:6px;">Nama Pemilik Rekening</label>
+            <input type="text" id="nama_pemilik" name="nama_pemilik_rekening" value="{{ old('nama_pemilik_rekening') }}" placeholder="Nama sesuai buku rekening / akun e-wallet (kosongkan jika Tunai)"
+                   style="width:100%; padding:10px 12px; border:1px solid #F3B4B4; border-radius:4px; margin-bottom:16px; box-sizing:border-box; font-family:Arial, sans-serif;">
         </div>
 
  <div style="background:#FCE9C7; color:#8A5A00; border-radius:4px; padding:12px 16px; margin-bottom:20px; font-size:13px;">
@@ -63,45 +67,46 @@
         const metodeSelect = document.getElementById('metode_penarikan');
         const rekeningArea = document.getElementById('rekeningArea');
         const jumlahDisplayTarik = document.getElementById('jumlah_display');
-const jumlahHiddenTarik = document.getElementById('jumlah');
-const jumlahErrorTarik = document.getElementById('jumlah_error');
-const saldoSukarelaTersedia = {{ $saldoSukarela }};
+        const jumlahHiddenTarik = document.getElementById('jumlah');
+        const jumlahErrorTarik = document.getElementById('jumlah_error');
+        const saldoSukarelaTersedia = {{ $saldoSukarela }};
 
-const MIN_TARIK = 50000;
+        const MIN_TARIK = 50000;
 
-function formatRibuanTarik(v) {
-    return v.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-}
+        function formatRibuanTarik(v) {
+            return v.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
 
-jumlahDisplayTarik.addEventListener('input', function () {
-    const angka = this.value.replace(/\D/g, '');
-    this.value = angka ? 'Rp ' + formatRibuanTarik(angka) : '';
-    jumlahHiddenTarik.value = angka;
-});
+        jumlahDisplayTarik.addEventListener('input', function () {
+            const angka = this.value.replace(/\D/g, '');
+            this.value = angka ? 'Rp ' + formatRibuanTarik(angka) : '';
+            jumlahHiddenTarik.value = angka;
+        });
 
-document.getElementById('formTarik').addEventListener('submit', function (e) {
-    const angka = parseInt(jumlahHiddenTarik.value || '0', 10);
+        document.getElementById('formTarik').addEventListener('submit', function (e) {
+            const angka = parseInt(jumlahHiddenTarik.value || '0', 10);
 
-    if (!angka || angka < MIN_TARIK) {
-        e.preventDefault();
-        document.getElementById('modal-min-tarik').style.display = 'flex';
-    } else if (angka > saldoSukarelaTersedia) {
-        e.preventDefault();
-        document.getElementById('modal-saldo-kurang').style.display = 'flex';
-    } else {
-        jumlahErrorTarik.style.display = 'none';
-    }
-});
+            if (!angka || angka < MIN_TARIK) {
+                e.preventDefault();
+                document.getElementById('modal-min-tarik').style.display = 'flex';
+            } else if (angka > saldoSukarelaTersedia) {
+                e.preventDefault();
+                document.getElementById('modal-saldo-kurang').style.display = 'flex';
+            } else {
+                jumlahErrorTarik.style.display = 'none';
+            }
+        });
+
         function toggleRekening() {
-            const bank=document.getElementById('nama_bank');
-            const norek=document.getElementById('no_rekening');
-            const pemilik=document.getElementById('nama_pemilik');
-            if(metodeSelect.value==='Tunai'){
-                rekeningArea.style.display='none';
-                [bank,norek,pemilik].forEach(e=>{if(e){e.required=false;e.value='';}});
-            }else{
-                rekeningArea.style.display='block';
-                [bank,norek,pemilik].forEach(e=>{if(e)e.required=true;});
+            const bank = document.getElementById('nama_bank');
+            const norek = document.getElementById('no_rekening');
+            const pemilik = document.getElementById('nama_pemilik');
+            if (metodeSelect.value === 'Tunai') {
+                rekeningArea.style.display = 'none';
+                [bank, norek, pemilik].forEach(e => { if (e) { e.required = false; e.value = ''; } });
+            } else {
+                rekeningArea.style.display = 'block';
+                [bank, norek, pemilik].forEach(e => { if (e) e.required = true; });
             }
         }
         metodeSelect.addEventListener('change', toggleRekening);

@@ -44,9 +44,7 @@
                         MASUK
                     </button>
 
-                    <div style="text-align:center; font-size:13px; color:#7F1D1D; background:#FDEEEE; border:1px solid #F3B4B4; border-radius:4px; padding:12px 16px;">
-                        Email login pengurus menggunakan format: [jabatan].[id]@koperasimerahputih.id
-                    </div>
+                    
                 </form>
 
             </div>

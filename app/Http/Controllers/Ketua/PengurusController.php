@@ -19,14 +19,7 @@ class PengurusController extends Controller
             ->orderBy('id_pengurus')
             ->get();
 
-        $jabatanKosong = collect(['Sekretaris', 'Bendahara'])
-            ->filter(function ($jabatan) use ($daftarPengurus) {
-                return ! $daftarPengurus
-                    ->where('jabatan', $jabatan)
-                    ->where('status', 'Menjabat')
-                    ->count();
-            })
-            ->values();
+        $jabatanKosong = $this->hitungJabatanKosong($daftarPengurus);
 
         return view('ketua.pengurus.index', [
             'daftarPengurus' => $daftarPengurus,
@@ -35,11 +28,39 @@ class PengurusController extends Controller
     }
 
     /**
+     * Helper: hitung jabatan (Sekretaris/Bendahara) mana yang belum ada
+     * pengurus berstatus Menjabat. Dipakai bersama di index(), create(), dan store()
+     * supaya aturan "maks 1 pengurus aktif per jabatan" konsisten di semua titik.
+     */
+    private function hitungJabatanKosong($daftarPengurus = null)
+    {
+        $daftarPengurus = $daftarPengurus ?? Pengurus::all();
+
+        return collect(['Sekretaris', 'Bendahara'])
+            ->filter(function ($jabatan) use ($daftarPengurus) {
+                return ! $daftarPengurus
+                    ->where('jabatan', $jabatan)
+                    ->where('status', 'Menjabat')
+                    ->count();
+            })
+            ->values();
+    }
+
+    /**
      * D-41 - Form Tambah Pengurus
      */
     public function create()
     {
-        return view('ketua.pengurus.create');
+        $jabatanKosong = $this->hitungJabatanKosong();
+
+        if ($jabatanKosong->isEmpty()) {
+            return redirect()->route('ketua.pengurus.index')
+                ->with('error', 'Semua jabatan (Sekretaris & Bendahara) sudah terisi. Berhentikan salah satu pengurus terlebih dahulu untuk menambah yang baru.');
+        }
+
+        return view('ketua.pengurus.create', [
+            'jabatanKosong' => $jabatanKosong,
+        ]);
     }
 
     /**
@@ -47,14 +68,22 @@ class PengurusController extends Controller
      */
     public function store(Request $request)
     {
+        $jabatanKosong = $this->hitungJabatanKosong();
+
+        if ($jabatanKosong->isEmpty()) {
+            return redirect()->route('ketua.pengurus.index')
+                ->with('error', 'Semua jabatan (Sekretaris & Bendahara) sudah terisi. Berhentikan salah satu pengurus terlebih dahulu untuk menambah yang baru.');
+        }
+
         $request->validate([
             'nama_pengurus' => ['required', 'string', 'max:255'],
-            'jabatan' => ['required', 'in:Sekretaris,Bendahara'],
+            'jabatan' => ['required', 'in:' . $jabatanKosong->implode(',')],
             'email' => ['required', 'email', 'max:255', 'unique:pengurus,email'],
             'password' => ['required', 'string', 'min:8'],
         ], [
             'required' => 'Harap isi semua kolom — semua field wajib diisi.',
             'email.unique' => 'Email ini sudah terdaftar sebagai pengurus.',
+            'jabatan.in' => 'Jabatan ini sudah ada pengurus yang menjabat.',
         ]);
 
         Pengurus::create([

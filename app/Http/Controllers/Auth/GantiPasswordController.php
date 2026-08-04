@@ -18,9 +18,9 @@ class GantiPasswordController extends Controller
     {
         $anggota = Auth::guard('web')->user();
 
-        // Kalau ternyata sudah tidak wajib ganti password, langsung ke dashboard
+        // Kalau ternyata sudah tidak wajib ganti password, langsung ke simpanan
         if (! $anggota->wajib_ganti_password) {
-            return redirect('/dashboard');
+            return redirect()->route('simpanan.setor');
         }
 
         return view('auth.ganti-password');
@@ -48,6 +48,6 @@ class GantiPasswordController extends Controller
             'password_sementara_plain' => null,
         ]);
 
-        return redirect('/dashboard')->with('status', 'Password berhasil diubah.');
+        return redirect()->route('simpanan.setor')->with('password_updated', true);
     }
 }

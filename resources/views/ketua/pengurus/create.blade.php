@@ -20,16 +20,14 @@
             <p style="font-size:12px; color:#6B7280; margin:0 0 16px 0;">(Sekretaris / Bendahara)</p>
 
             <label style="display:block; font-size:14px; color:#241412; margin-bottom:6px;">Email</label>
-            <input type="email" name="email" value="{{ old('email') }}" placeholder="[email@koperasi.id]"
+            <input type="email" name="email" value="{{ old('email') }}" placeholder="[nama@gmail.com]"
                    style="width:100%; padding:10px 12px; border:1px solid #F3B4B4; border-radius:4px; font-size:14px; margin-bottom:16px; box-sizing:border-box;">
 
-            <label style="display:block; font-size:14px; color:#241412; margin-bottom:6px;">Password Awal</label>
+            <label style="display:block; font-size:14px; color:#241412; margin-bottom:6px;">Password</label>
             <input type="text" name="password" placeholder="••••••••"
                    style="width:100%; padding:10px 12px; border:1px solid #F3B4B4; border-radius:4px; font-size:14px; margin-bottom:16px; box-sizing:border-box;">
 
-            <div style="background:#FCE9C7; color:#8A5A00; padding:12px 16px; border-radius:4px; font-size:13px; margin-bottom:24px;">
-                ⚠ Password ini bersifat sementara. Pengurus dapat menggantinya setelah login pertama.
-            </div>
+            
 
             <div style="display:flex; gap:12px;">
                 <button type="submit"

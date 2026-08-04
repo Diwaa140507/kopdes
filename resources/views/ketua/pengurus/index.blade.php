@@ -17,10 +17,17 @@
         </div>
     @endif
 
-    <a href="{{ route('ketua.pengurus.create') }}"
-       style="display:inline-block; padding:12px 20px; background:#B91C1C; color:#ffffff; border-radius:4px; font-weight:bold; font-size:14px; text-decoration:none; margin-bottom:20px;">
-        + Tambah Pengurus
-    </a>
+    @if ($jabatanKosong->isNotEmpty())
+        <a href="{{ route('ketua.pengurus.create') }}"
+           style="display:inline-block; padding:12px 20px; background:#B91C1C; color:#ffffff; border-radius:4px; font-weight:bold; font-size:14px; text-decoration:none; margin-bottom:20px;">
+            + Tambah Pengurus
+        </a>
+    @else
+        <div style="display:inline-block; padding:12px 20px; background:#E5E7EB; color:#9CA3AF; border-radius:4px; font-weight:bold; font-size:14px; margin-bottom:12px; cursor:not-allowed;">
+            + Tambah Pengurus
+        </div>
+        <p style="font-size:13px; color:#6B7280; margin:0 0 20px 0;">Semua jabatan (Sekretaris &amp; Bendahara) sudah terisi. Berhentikan salah satu pengurus terlebih dahulu untuk menambah yang baru.</p>
+    @endif
 
     <div style="background:#ffffff; border:1px solid #E5E7EB; border-radius:6px; overflow:hidden;">
         <table style="width:100%; border-collapse:collapse; font-size:14px;">

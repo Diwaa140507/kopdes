@@ -25,7 +25,7 @@ class VerifikasiPendaftaranController extends Controller
             });
         }
 
-        $daftarCalonAnggota = $query->orderBy('created_at', 'asc')->get();
+        $daftarCalonAnggota = $query->orderBy('tanggal_daftar', 'asc')->get();
 
         $selected = null;
         $nikSudahTerdaftar = false;
