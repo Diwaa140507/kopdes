@@ -8,15 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('anggota', function (Blueprint $table) {
-            $table->renameColumn('created_at', 'tanggal_daftar');
-        });
+        if (Schema::hasColumn('anggota', 'created_at') && !Schema::hasColumn('anggota', 'tanggal_daftar')) {
+            Schema::table('anggota', function (Blueprint $table) {
+                $table->renameColumn('created_at', 'tanggal_daftar');
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('anggota', function (Blueprint $table) {
-            $table->renameColumn('tanggal_daftar', 'created_at');
-        });
+        if (Schema::hasColumn('anggota', 'tanggal_daftar') && !Schema::hasColumn('anggota', 'created_at')) {
+            Schema::table('anggota', function (Blueprint $table) {
+                $table->renameColumn('tanggal_daftar', 'created_at');
+            });
+        }
     }
 };
